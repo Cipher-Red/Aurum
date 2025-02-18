@@ -1,6 +1,6 @@
 # Aurum
 
-<img src="Banner.jpeg" alt="Banner">
+<img src="B.jpeg" alt="Banner">
 
 ## Overview
 Aurum is a Python-based terminal tool that provides email validation, domain MX record checks, and blacklist checks using the Spamhaus database. This tool helps users verify email validity, check if an email can receive messages, and determine whether a domain is blacklisted.
