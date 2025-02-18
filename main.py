@@ -3,6 +3,10 @@ from email_validator import validate_email, EmailNotValidError, EmailUndeliverab
 import dns.resolver
 from colorama import Fore, Style
 import csv
+from fpdf import FPDF
+from dns.resolver import LifetimeTimeout
+import re
+from datetime import datetime
 
 
 def validate(email):
@@ -11,12 +15,12 @@ def validate(email):
         # If the Email is valid then it will run this function
         valid = validate_email(email)
         normalized_email = valid.email
-        print(Fore.GREEN + f"The Email Address |{normalized_email}| is a valid email address.")
+        return Fore.GREEN + f"The Email Address |{normalized_email}| is a valid email address."
 
 
     # Email is not valid it will run this function
     except EmailNotValidError as e:
-        print(Fore.RED + f"The Email Address |{email}| is not a valid email address {e}.")
+        return Fore.RED + f"The Email Address |{email}| is not a valid email address {e}."
 
 def mx_records(email):
 
@@ -29,34 +33,40 @@ def mx_records(email):
         try:
             # Check if the domain has MX records
             mx_records = dns.resolver.resolve(domain, 'MX')
-            print(Fore.GREEN + f"Domain |{domain}| has MX records. This email can receive emails.")
+            return Fore.GREEN + f"Domain |{domain}| has MX records. This email can receive emails."
             return
+        except LifetimeTimeout:
+            pass
         except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.resolver.LifetimeTimeout):
-            print(Fore.RED + f"Domain |{domain}| does not have MX records.")
+            return Fore.RED + f"Domain |{domain}| does not have MX records."
 
         # No MX then check A
         try:
             dns.resolver.resolve(domain, 'A')
-            print(f"No MX records, but |{domain}| has an A record. It might accept emails.")
+            return f"No MX records, but |{domain}| has an A record. It might accept emails."
             return
+        except LifetimeTimeout:
+            pass
         except dns.resolver.NoAnswer:
             pass
 
         # No A check for AAAA
         try:
             dns.resolver.resolve(domain, 'AAAA')
-            print(f"No MX records, but |{domain}| has an AAAA record. It might accept emails.")
+            return f"No MX records, but |{domain}| has an AAAA record. It might accept emails."
             return
+        except LifetimeTimeout:
+            pass
         except dns.resolver.NoAnswer:
             pass
 
         # If none have the domain then its invalid
-        print(Fore.RED + f"Domain |{domain}| does not accept email.")
+        return Fore.RED + f"Domain |{domain}| does not accept emails."
 
     except EmailNotValidError as e:
-        print(Fore.RED + f"Invalid email: {email} {e}")
+        return Fore.RED + f"Invalid email: {email} {e}"
     except EmailUndeliverableError:
-        print(Fore.RED + f"The domain |{domain}| does not accept email.")
+        return Fore.RED + f"The domain |{domain}| does not accept email."
 
 def blacklistcheck(email):
     try:
@@ -77,14 +87,17 @@ def blacklistcheck(email):
             query = f"{domain}.{blacklist}"
             try:
                 dns.resolver.resolve(query, "A")
-                print(Fore.RED + f"The Domain |{domain}| is Blacklisted on {blacklist}")
+                return Fore.RED + f"The Domain |{domain}| is Blacklisted on {blacklist}"
                 return
+            except LifetimeTimeout:
+                return f"DNS query for {domain} timed out."
+                continue
             except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
                 continue
-        print(Fore.GREEN + f"The domain |{domain}| is not blacklisted on any of the checked blacklists.")
+        return Fore.GREEN + f"The domain |{domain}| is not blacklisted on any of the checked blacklists."
 
     except EmailNotValidError as e:
-        print(Fore.RED + f"Email is in an invalid form: {e}")
+        return Fore.RED + f"Email is in an invalid form: {e}"
 
 # A Custom internal blacklist you can add to it what you find or discover
 def cblacklist(email):
@@ -98,35 +111,94 @@ def cblacklist(email):
         blacklist = ["0SPAM","Abuse.ro","example.domain"]
 
         if domain in blacklist or normalized_email in emailbl:
-            print(Fore.RED + f"This Email address |{email}| is blacklisted.")
+            return Fore.RED + f"This Email address |{email}| is blacklisted."
 
         else:
-            print(Fore.GREEN + f"The Email address |{email}| isn't blacklisted internally")
+            return Fore.GREEN + f"The Email address |{email}| isn't blacklisted internally"
 
     except EmailNotValidError as e:
-        print(Fore.RED + f"Email is in an invalid form {e}")
+        return Fore.RED + f"Email is in an invalid form {e}"
 
 def fullscan(email):
 
     print(Style.RESET_ALL + "[Validating Email Address]".center(terminal_width, ' '))
-    validate(email)
+    print(validate(email))
 
     print(Style.RESET_ALL + "[Checking MX records]".center(terminal_width, ' '))
-    mx_records(email)
+    print(mx_records(email))
 
     print(Style.RESET_ALL + "[Checking if the domain is blacklisted]".center(terminal_width, ' '))
-    blacklistcheck(email)
+    print(blacklistcheck(email))
 
     print(Style.RESET_ALL + "[Checking if the domain is blacklisted using the custom list]".center(terminal_width, ' '))
-    cblacklist(email)
+    print(cblacklist(email))
+
+def rct(text):
+    # Remove color codes from the text
+    return re.sub(r'\033\[[0-9;]*m', '', text)
+
+def bulfullscan(email):
+    output_data = []
+
+    output_data.append("\n[Validation Result]\n")
+    result = validate(email) or "No result"  # Ensure something is returned
+    result = rct(result)
+    output_data.append(result)
+
+    output_data.append("\n[MX records Result]\n")
+    result = mx_records(email) or "No result"
+    result = rct(result)
+    output_data.append(result)
+
+    output_data.append("\n[Blacklist Result]\n")
+    result = blacklistcheck(email) or "No result"
+    result = rct(result)
+    output_data.append(result)
+
+    output_data.append("\n[Custom blacklist Result]\n")
+    result = cblacklist(email) or "No result"
+    result = rct(result)
+    output_data.append(result)
+
+    return output_data
+
+
+def report(output_data, filename="Aurum_Report.pdf"):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+
+    pdf.image('Report_Header.png', x=0, y=0, w=pdf.w)
+    pdf.ln(50)
+
+    for line in output_data:
+
+        if "Email:" in line:  # Assuming the email is a part of this line
+            pdf.set_font("Arial", style='B', size=12)  # Set bold
+
+        else:
+            pdf.set_font("Arial", size=12)  # Set normal font
+
+        pdf.multi_cell(0, 10, line)
+
+    pdf.ln(20)
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    pdf.set_font("Arial", size=10, style='B')
+    pdf.cell(200, 10, txt=f"Report generated on: {timestamp}", ln=True, align="C")
+
+    pdf.output(filename)
 
 def bulkscan(file_path):
 
+    output_data = []
     with open(file_path, 'r') as file:
         csv_reader = csv.reader(file)
         for row in csv_reader:
             email = row[0]
-            fullscan(email)
+            result = bulfullscan(email)
+            output_data.append(f"\nEmail: {email}")
+            output_data.append(f"{' '.join(result)}\n")
+            report(output_data)
 
 if __name__ == '__main__':
 
@@ -138,13 +210,10 @@ if __name__ == '__main__':
     print("|2.Check if Email Can Receive|".center(terminal_width, ' '))
     print("|3.Check if the Email is blacklisted|".center(terminal_width, ' '))
     print("|4.Check if the Email is internally blacklisted using a custom list|".center(terminal_width, ' '))
-    print("|5. Perform Bulk Email Checks using a .CSV file with a full scan|".center(terminal_width, ' '))
+    print("|5.Perform Bulk Email Checks using a .CSV file with a full scan|".center(terminal_width, ' '))
     print("|6.Run All checks|\n".center(terminal_width, ' '))
     print("Developed By Qais M.Alqaissi\n".center(terminal_width, ' '))
     print("Aurum Terminal".center(terminal_width, '-'))
-
-
-
 
     while True:
 
@@ -154,25 +223,26 @@ if __name__ == '__main__':
         if option == "1":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
 
-            validate(email)
+            print(validate(email))
 
         elif option == "2":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
 
-            mx_records(email)
+            print(mx_records(email))
 
         elif option == "3":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
 
-            blacklistcheck(email)
+            print(blacklistcheck(email))
 
         elif option == "4":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
-            cblacklist(email)
+            print(cblacklist(email))
 
         elif option == "5":
             file_path = input(Style.RESET_ALL + "Enter the File path to the .CSV file: ")
             bulkscan(file_path)
+            print(f"Report of the scan is done ")
 
         elif option == "6":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
