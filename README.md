@@ -49,14 +49,14 @@ Windows users can use a compiled version of the code to run the tool without nee
 ```
 ------------------------Aurum-------------------------
 
-|1.Check Email Validity|
-|2.Check if Email Can Receive|
-|3.Check if the Email is blacklisted|
-|4.Run All checks|
+               |1.Check Email Validity|
+            |2.Check if Email Can Receive|
+        |3.Check if the Email is blacklisted|
+                  |4.Run All checks|
 
-Developed By Qais M. Alqaissi
+              Developed By Qais M. Alqaissi
 
----------------------Aurum Terminal--------------------
+---------------------Aurum Terminal-------------------
 
 Enter your choice (1-4) or 'exit' to quit: 1
 Enter the Email Address you want to Check: example@gmail.com
