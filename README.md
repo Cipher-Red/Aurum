@@ -5,12 +5,13 @@
 </div>
 
 ## Overview
-Aurum is a Python-based terminal tool that provides email validation, domain MX record checks, and blacklist checks using the Spamhaus database. This tool helps users verify email validity, check if an email can receive messages, and determine whether a domain is blacklisted.
+Aurum is a Python-based terminal tool that provides email validation, domain MX record checks, and blacklist checks using multiple DNS-based blacklists (DNSBLs). This tool helps users verify email validity, check if an email can receive messages, and determine whether a domain is blacklisted.
 
 ## Features
 - **Email Validation:** Checks if an email address is syntactically valid.
 - **MX Record Check:** Determines if the email domain has MX records, indicating its ability to receive emails.
-- **Blacklist Check:** Checks if the email domain is blacklisted on Spamhaus.
+- **Blacklist Check:** Checks if the email domain is blacklisted on multiple DNSBLs, including Spamhaus, SORBS, and Barracuda.
+- **Custom Blacklist:** Allows adding a custom internal blacklist for manual domain flagging.
 - **All-in-One Check:** Runs all three checks in sequence for comprehensive analysis.
 - **Cross-Platform:** Works on both Windows and Linux systems.
 
@@ -62,6 +63,15 @@ Enter your choice (1-4) or 'exit' to quit: 1
 Enter the Email Address you want to Check: example@gmail.com
 The Email Address example@gmail.com is a valid email address.
 ```
+
+## Blacklists Checked
+Aurum queries multiple DNSBLs, including:
+- Spamhaus (zen.spamhaus.org, dbl.spamhaus.org, xbl.spamhaus.org)
+- SpamCop (bl.spamcop.net)
+- Barracuda (b.barracudacentral.org)
+- SORBS (dnsbl.sorbs.net)
+- SURBL (multi.surbl.org, phishing.rhsbl.surbl.org)
+- And many more...
 
 ## License
 This project is licensed under the Apache 2.0 License.
