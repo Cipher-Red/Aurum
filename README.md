@@ -1,7 +1,7 @@
 # Aurum
 
 <div align="center">
-<img src="Banner.jpeg" alt="Banner">
+<img src="Heading.png" alt="Banner">
 </div>
 
 ## Overview
