@@ -55,7 +55,8 @@ Windows users can use a compiled version of the code to run the tool without nee
                          |2.Check if Email Can Receive|                         
                      |3.Check if the Email is blacklisted|                      
       |4.Check if the Email is internally blacklisted using a custom list|      
-                              |5.Run All checks|
+       |5. Perform Bulk Email Checks using a .CSV file with a full scan|        
+                              |6.Run All checks|
                                
                          Developed By Qais M.Alqaissi
                           
