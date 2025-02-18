@@ -9,12 +9,12 @@ def validate(email):
         # If the Email is valid then it will run this function
         valid = validate_email(email)
         normalized_email = valid.email
-        print(Fore.GREEN + f"The Email Address {normalized_email} is a valid email address.")
+        print(Fore.GREEN + f"The Email Address |{normalized_email}| is a valid email address.")
 
 
     # Email is not valid it will run this function
     except EmailNotValidError as e:
-        print(Fore.RED + f"The Email Address {email} is not a valid email address {e}.")
+        print(Fore.RED + f"The Email Address |{email}| is not a valid email address {e}.")
 
 def mx_records(email):
 
@@ -57,23 +57,52 @@ def mx_records(email):
         print(Fore.RED + f"The domain |{domain}| does not accept email.")
 
 def blacklistcheck(email):
+    try:
+        # Validate email
+        valid = validate_email(email)
+        normalized_email = valid.email
+        domain = normalized_email.split("@")[1]
+
+        # Blacklist database to check against
+        blacklists = ["zen.spamhaus.org","psbl.surriel.com","dnsbl.sorbs.net","bl.spamcop.net","b.barracudacentral.org",
+                      "all.spamrats.com","bl.spameatingmonkey.net","ubl.unsubscore.com","truncate.gbudb.net","dnsbl.info",
+                      "ubl.lashback.com","rbl.interserver.net","xbl.spamhaus.org","cbl.abuseat.org","dnsbl-1.uceprotect.net",
+                      "dnsbl-2.uceprotect.net","dnsbl-3.uceprotect.net","relays.mail-abuse.org","dnsbl.spfbl.net",
+                      "rbl.efnetrbl.org","multi.surbl.org","dbl.spamhaus.org","uribl.spameatingmonkey.net"]
+
+        # Check if the domain is blacklisted on multiple lists
+        for blacklist in blacklists:
+            query = f"{domain}.{blacklist}"
+            try:
+                dns.resolver.resolve(query, "A")
+                print(Fore.RED + f"The Domain |{domain}| is Blacklisted on {blacklist}")
+                return
+            except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
+                continue
+        print(Fore.GREEN + f"The domain |{domain}| is not blacklisted on any of the checked blacklists.")
+
+    except EmailNotValidError as e:
+        print(Fore.RED + f"Email is in an invalid form: {e}")
+
+# A Custom internal blacklist you can add to it what you find or discover
+def cblacklist(email):
 
     try:
         valid = validate_email(email)
         normalized_email = valid.email
         domain = normalized_email.split("@")[1]
 
-        blacklist = "zen.spamhaus.org"
-        query = f"{domain}.{blacklist}"
+        emailbl = ["example@spam.spam","test@test.com"]
+        blacklist = ["0SPAM","Abuse.ro","example.domain"]
 
-        try:
-            dns.resolver.resolve(query, "A")
-            print(Fore.RED + f"The Domain |{domain}| is Blacklisted on Spamhaus")
+        if domain in blacklist or normalized_email in emailbl:
+            print(Fore.RED + f"This Email address |{email} is blacklisted.")
 
-        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer):
-            print(Fore.GREEN + f"The Domain |{domain}| is not Blacklisted on Spamhaus")
+        else:
+            print(Fore.GREEN + f"The Email address |{email}| isn't blacklisted internally")
+
     except EmailNotValidError as e:
-        print(Fore.RED + f"Email Is in a invalid form {e}")
+        print(Fore.RED + f"Email is in an invalid form {e}")
 
 if __name__ == '__main__':
 
@@ -84,7 +113,8 @@ if __name__ == '__main__':
     print("|1.Check Email Validity|".center(terminal_width, ' '))
     print("|2.Check if Email Can Receive|".center(terminal_width, ' '))
     print("|3.Check if the Email is blacklisted|".center(terminal_width, ' '))
-    print("|4.Run All checks|\n".center(terminal_width, ' '))
+    print("|4.Check if the Email is internally blacklisted using a custom list|".center(terminal_width, ' '))
+    print("|5.Run All checks|\n".center(terminal_width, ' '))
     print("Developed By Qais M.Alqaissi\n".center(terminal_width, ' '))
     print("Aurum Terminal".center(terminal_width, '-'))
 
@@ -93,7 +123,7 @@ if __name__ == '__main__':
 
     while True:
 
-        option = input(Style.RESET_ALL + "\nEnter your choice (1-4) or 'exit' to quit: ")
+        option = input(Style.RESET_ALL + "\nEnter your choice (1-5) or 'exit' to quit: ")
         option = option.lower()
 
         if option == "1":
@@ -113,6 +143,10 @@ if __name__ == '__main__':
 
         elif option == "4":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
+            cblacklist(email)
+
+        elif option == "5":
+            email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
 
             print(Style.RESET_ALL + "[Validating Email Address]".center(terminal_width, ' '))
             validate(email)
@@ -120,9 +154,12 @@ if __name__ == '__main__':
             print(Style.RESET_ALL + "[Checking MX records]".center(terminal_width, ' '))
             mx_records(email)
 
-            print(Style.RESET_ALL + "[Checking if the domain is black listed]".center(terminal_width, ' '))
+            print(Style.RESET_ALL + "[Checking if the domain is blacklisted]".center(terminal_width, ' '))
             blacklistcheck(email)
 
+            print(Style.RESET_ALL + "[Checking if the domain is blacklisted using the custom list]".center(terminal_width, ' '))
+            cblacklist(email)
+
         elif option == "exit":
-            print("Shutting down...")
+            print(Fore.RED + "Shutting down...")
             break
