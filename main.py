@@ -2,6 +2,8 @@ import shutil
 from email_validator import validate_email, EmailNotValidError, EmailUndeliverableError
 import dns.resolver
 from colorama import Fore, Style
+import csv
+
 
 def validate(email):
 
@@ -96,13 +98,35 @@ def cblacklist(email):
         blacklist = ["0SPAM","Abuse.ro","example.domain"]
 
         if domain in blacklist or normalized_email in emailbl:
-            print(Fore.RED + f"This Email address |{email} is blacklisted.")
+            print(Fore.RED + f"This Email address |{email}| is blacklisted.")
 
         else:
             print(Fore.GREEN + f"The Email address |{email}| isn't blacklisted internally")
 
     except EmailNotValidError as e:
         print(Fore.RED + f"Email is in an invalid form {e}")
+
+def fullscan(email):
+
+    print(Style.RESET_ALL + "[Validating Email Address]".center(terminal_width, ' '))
+    validate(email)
+
+    print(Style.RESET_ALL + "[Checking MX records]".center(terminal_width, ' '))
+    mx_records(email)
+
+    print(Style.RESET_ALL + "[Checking if the domain is blacklisted]".center(terminal_width, ' '))
+    blacklistcheck(email)
+
+    print(Style.RESET_ALL + "[Checking if the domain is blacklisted using the custom list]".center(terminal_width, ' '))
+    cblacklist(email)
+
+def bulkscan(file_path):
+
+    with open(file_path, 'r') as file:
+        csv_reader = csv.reader(file)
+        for row in csv_reader:
+            email = row[0]
+            fullscan(email)
 
 if __name__ == '__main__':
 
@@ -114,7 +138,8 @@ if __name__ == '__main__':
     print("|2.Check if Email Can Receive|".center(terminal_width, ' '))
     print("|3.Check if the Email is blacklisted|".center(terminal_width, ' '))
     print("|4.Check if the Email is internally blacklisted using a custom list|".center(terminal_width, ' '))
-    print("|5.Run All checks|\n".center(terminal_width, ' '))
+    print("|5. Perform Bulk Email Checks using a .CSV file with a full scan|".center(terminal_width, ' '))
+    print("|6.Run All checks|\n".center(terminal_width, ' '))
     print("Developed By Qais M.Alqaissi\n".center(terminal_width, ' '))
     print("Aurum Terminal".center(terminal_width, '-'))
 
@@ -123,7 +148,7 @@ if __name__ == '__main__':
 
     while True:
 
-        option = input(Style.RESET_ALL + "\nEnter your choice (1-5) or 'exit' to quit: ")
+        option = input(Style.RESET_ALL + "\nEnter your choice (1-6) or 'exit' to quit: ")
         option = option.lower()
 
         if option == "1":
@@ -146,19 +171,12 @@ if __name__ == '__main__':
             cblacklist(email)
 
         elif option == "5":
+            file_path = input(Style.RESET_ALL + "Enter the File path to the .CSV file: ")
+            bulkscan(file_path)
+
+        elif option == "6":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
-
-            print(Style.RESET_ALL + "[Validating Email Address]".center(terminal_width, ' '))
-            validate(email)
-
-            print(Style.RESET_ALL + "[Checking MX records]".center(terminal_width, ' '))
-            mx_records(email)
-
-            print(Style.RESET_ALL + "[Checking if the domain is blacklisted]".center(terminal_width, ' '))
-            blacklistcheck(email)
-
-            print(Style.RESET_ALL + "[Checking if the domain is blacklisted using the custom list]".center(terminal_width, ' '))
-            cblacklist(email)
+            fullscan(email)
 
         elif option == "exit":
             print(Fore.RED + "Shutting down...")
