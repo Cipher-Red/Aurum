@@ -103,5 +103,5 @@ Developed by **Qais M. Alqaissi**.
 Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## Contact
-For any inquiries, reach out via [LinkedIn](www.linkedin.com/in/qais-alqaissi-1b9295238) or Email: Qipher09@proton.me.
+For any inquiries, reach out via [LinkedIn](https://www.linkedin.com/in/qais-alqaissi-1b9295238/) or Email: Qipher09@proton.me.
 
