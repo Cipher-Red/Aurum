@@ -76,7 +76,25 @@ Aurum queries multiple DNSBLs, including:
 - And many more...
 
 ## License
-This project is licensed under the Apache 2.0 License.
+This project is licensed under the Apache 2.0 License. 
+
+The **Apache 2.0 License** allows you to freely use, modify, and distribute the software, even for commercial purposes, under the following conditions:
+- You must include the original copyright notice and license in any distribution.
+- Any modifications must be clearly documented.
+- The software is provided "as is," without warranty of any kind.
+- You are not allowed to use the project’s trademarks, branding, or logo without permission.
+
+For full details, refer to the official [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+
+## Legal Disclaimer
+Aurum is designed as a tool for security professionals, researchers, and ethical users. 
+
+- **Intended Use:** This tool should only be used for lawful and ethical security research, email security assessments, and administrative monitoring.
+- **Unauthorized Use:** Using Aurum to check third-party emails or domains without proper authorization may violate privacy laws and terms of service agreements.
+- **No Warranty:** The software is provided "as is" without any warranties or guarantees. The developers are not responsible for any misuse, legal consequences, or damage resulting from its use.
+- **Compliance:** Ensure compliance with local laws and regulations when using this tool.
+
+By using Aurum, you agree to these terms and acknowledge that misuse of the tool is solely your responsibility.
 
 ## Author
 Developed by **Qais M. Alqaissi**.
