@@ -21,8 +21,8 @@ Ensure you have Python installed on your system (Python 3.x recommended).
 ### Clone the Repository
 To clone this repository, run the following command:
 ```sh
-git clone https://github.com/Cipher-Red/aurum.git
-cd aurum
+git clone https://github.com/Cipher-Red/Aurum.git
+cd Aurum
 ```
 
 ### Install Required Dependencies
