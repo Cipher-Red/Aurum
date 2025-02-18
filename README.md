@@ -11,8 +11,8 @@ Aurum is a Python-based terminal tool that provides email validation, domain MX 
 - **Email Validation:** Checks if an email address is syntactically valid.
 - **MX Record Check:** Determines if the email domain has MX records, indicating its ability to receive emails.
 - **Blacklist Check:** Checks if the email domain is blacklisted on multiple DNSBLs, including Spamhaus, SORBS, and Barracuda.
-- **Custom Blacklist:** Allows adding a custom internal blacklist for manual domain flagging.
-- **All-in-One Check:** Runs all three checks in sequence for comprehensive analysis.
+- **Custom Blacklist Check:** Allows adding a custom internal blacklist for manually flagged domains or specific email addresses.
+- **All-in-One Check:** Runs all four checks in sequence for comprehensive analysis.
 - **Cross-Platform:** Works on both Windows and Linux systems.
 
 ## Installation
@@ -41,27 +41,29 @@ Then, follow the on-screen prompts to:
 1. Validate an email address.
 2. Check if an email domain can receive messages.
 3. Check if an email domain is blacklisted.
-4. Perform all checks at once.
+4. Check if an email address or domain is internally blacklisted using a custom list.
+5. Perform all checks at once.
 
 ### Windows Users
 Windows users can use a compiled version of the code to run the tool without needing Python installed. A precompiled executable version will be available in the releases section.
 
 ## Example Output
 ```
-------------------------Aurum-------------------------
+-------------------------------------Aurum--------------------------------------
 
-               |1.Check Email Validity|
-            |2.Check if Email Can Receive|
-        |3.Check if the Email is blacklisted|
-                  |4.Run All checks|
+                            |1.Check Email Validity|                            
+                         |2.Check if Email Can Receive|                         
+                     |3.Check if the Email is blacklisted|                      
+      |4.Check if the Email is internally blacklisted using a custom list|      
+                              |5.Run All checks|
+                               
+                         Developed By Qais M.Alqaissi
+                          
+---------------------------------Aurum Terminal---------------------------------
 
-              Developed By Qais M. Alqaissi
-
----------------------Aurum Terminal-------------------
-
-Enter your choice (1-4) or 'exit' to quit: 1
+Enter your choice (1-5) or 'exit' to quit: 1
 Enter the Email Address you want to Check: example@gmail.com
-The Email Address example@gmail.com is a valid email address.
+The Email Address |example@gmail.com| is a valid email address.
 ```
 
 ## Blacklists Checked
