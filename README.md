@@ -7,7 +7,6 @@
 ## Overview
 Aurum is a Python-based terminal tool that provides email validation, domain MX record checks, and blacklist checks using multiple DNS-based blacklists (DNSBLs). This tool helps users verify email validity, check if an email can receive messages, and determine whether a domain is blacklisted.
 
-
 ## Features
 - **Email Validation:** Checks if an email address is syntactically valid.
 - **MX Record Check:** Determines if the email domain has MX records, indicating its ability to receive emails.
@@ -16,6 +15,7 @@ Aurum is a Python-based terminal tool that provides email validation, domain MX 
 - **All-in-One Check:** Runs all four checks in sequence for comprehensive analysis.
 - **Bulk Email Check:** Performs bulk email validation from a CSV file, running a full scan for each email.
 - **Cross-Platform:** Works on both Windows and Linux systems.
+- **PDF Report Generation:** Generates a detailed PDF report of the validation results.
 
 ## Installation
 ### Prerequisites
@@ -31,7 +31,7 @@ cd Aurum
 ### Install Required Dependencies
 Run the following command to install dependencies:
 ```sh
-pip install email-validator dnspython colorama
+pip install email-validator dnspython colorama fpdf
 ```
 
 ## Usage
@@ -44,7 +44,8 @@ Then, follow the on-screen prompts to:
 2. Check if an email domain can receive messages.
 3. Check if an email domain is blacklisted.
 4. Check if an email address or domain is internally blacklisted using a custom list.
-5. Perform all checks at once.
+5. Perform bulk email checks using a CSV file.
+6. Run all checks at once.
 
 ### Windows Users
 Windows users can use a compiled version of the code to run the tool without needing Python installed. A precompiled executable version will be available in the releases section.
@@ -64,7 +65,7 @@ Windows users can use a compiled version of the code to run the tool without nee
                           
 ---------------------------------Aurum Terminal---------------------------------
 
-Enter your choice (1-5) or 'exit' to quit: 1
+Enter your choice (1-6) or 'exit' to quit: 1
 Enter the Email Address you want to Check: example@gmail.com
 The Email Address |example@gmail.com| is a valid email address.
 ```
@@ -107,4 +108,3 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## Contact
 For any inquiries, reach out via [LinkedIn](https://www.linkedin.com/in/qais-alqaissi-1b9295238/) or Email: Qipher09@proton.me.
-
