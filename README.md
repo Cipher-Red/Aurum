@@ -97,6 +97,7 @@ Aurum is designed as a tool for security professionals, researchers, and ethical
 - **Unauthorized Use:** Using Aurum to check third-party emails or domains without proper authorization may violate privacy laws and terms of service agreements.
 - **No Warranty:** The software is provided "as is" without any warranties or guarantees. The developers are not responsible for any misuse, legal consequences, or damage resulting from its use.
 - **Compliance:** Ensure compliance with local laws and regulations when using this tool.
+- **Third-Party Services:** Aurum relies on third-party DNSBL services (e.g., Spamhaus, SORBS) to perform blacklist checks. Ensure compliance with the terms of use of these services when using the tool.
 
 By using Aurum, you agree to these terms and acknowledge that misuse of the tool is solely your responsibility.
 
