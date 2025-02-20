@@ -9,7 +9,7 @@ Aurum is a Python-based terminal tool that provides email validation, domain MX 
 
 ## Features
 - **Email Validation:** Checks if an email address is syntactically valid.
-- **MX Record Check:** Determines if the email domain has MX records, indicating its ability to receive emails.
+- **DNS Record Check:** Determines if the email domain has any DNS records(MX records, A & AAAA records, etc...), indicating its ability to receive emails.
 - **Blacklist Check:** Checks if the email domain is blacklisted on multiple DNSBLs, including Spamhaus, SORBS, and Barracuda.
 - **Custom Blacklist Check:** Allows adding a custom internal blacklist for manually flagged domains or specific email addresses.
 - **All-in-One Check:** Runs all four checks in sequence for comprehensive analysis.
