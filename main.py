@@ -7,6 +7,8 @@ from fpdf import FPDF
 from dns.resolver import LifetimeTimeout
 import re
 from datetime import datetime
+import smtplib
+import socket
 
 
 def validate(email):
@@ -111,6 +113,9 @@ def fullscan(email):
     print(Style.RESET_ALL + "[Checking if the domain is blacklisted using the custom list]".center(terminal_width, ' '))
     print(cblacklist(email))
 
+    print(Style.RESET_ALL + "[Checking if the Email is Valid by sending packets]".center(terminal_width, ' '))
+    print(vc(email))
+
 def rct(text):
     # Remove color codes from the text
     return re.sub(r'\033\[[0-9;]*m', '', text)
@@ -135,6 +140,11 @@ def bulfullscan(email):
 
     output_data.append("\n~~~~Custom blacklist Result~~~~\n")
     result = cblacklist(email) or "No result"
+    result = rct(result)
+    output_data.append(result)
+
+    output_data.append("\n~~~~Reachability Result~~~~\n")
+    result = vc(email) or "No result"
     result = rct(result)
     output_data.append(result)
 
@@ -177,6 +187,62 @@ def bulkscan(file_path):
             output_data.append(f"{' '.join(result)}\n")
             report(output_data)
 
+
+
+def vc(email):
+    domain = email.split("@")[-1]
+
+    # Known email providers smtp servers / mail servers
+    # You can add your own smtp server to check for custom mail servers
+    # Example { "Domain.com": "mail.Domain.com", } you can use this to add to the list to check
+    mail_servers = {
+        "gmail.com": "gmail-smtp-in.l.google.com",
+        "yahoo.com": "mta5.am0.yahoodns.net",
+        "outlook.com": "outlook-com.olc.protection.outlook.com",
+        "protonmail.com": "mail.protonmail.ch",
+        "proton.me": "mail.protonmail.ch",
+        "fibertechjo.com": "fibertechjo-com.mail.protection.outlook.com",
+    }
+
+    mail_server = mail_servers.get(domain)
+
+    if not mail_server:
+        return Fore.RED + "Mail server not found for this domain. - add the SMTP/mail server address to the list"
+
+    ports = [587, 25, 465]
+    for port in ports:
+
+        try:
+
+            if port == 465:
+                server = smtplib.SMTP_SSL(mail_server, port, timeout=10)
+            else:
+                server = smtplib.SMTP(mail_server, port, timeout=10)
+
+            server.set_debuglevel(0)
+            server.ehlo()
+
+            if port == 587:
+                server.starttls()
+                server.ehlo()
+
+            sender_email = "test@example.com"
+            server.mail(sender_email)
+            code, message = server.rcpt(email)
+
+            server.quit()
+
+            if code == 250:
+                return Fore.GREEN + "This Email can Receive messages"
+            elif code == 550:
+                return Fore.RED + "This Email cannot Receive messages"
+            else:
+                return Fore.RED + f"Unknown response: {code} {message}"
+
+        except Exception as e:
+            return Fore.RED + f"Error: {e} - Could be a security measure for spam if there was a time out error"
+
+
 if __name__ == '__main__':
 
     # Take The terminal Size to center the text
@@ -187,8 +253,9 @@ if __name__ == '__main__':
     print("|2.Check if Email Can Receive|".center(terminal_width, ' '))
     print("|3.Check if the Email is blacklisted|".center(terminal_width, ' '))
     print("|4.Check if the Email is internally blacklisted using a custom list|".center(terminal_width, ' '))
-    print("|5.Perform Bulk Email Checks using a .CSV file with a full scan|".center(terminal_width, ' '))
-    print("|6.Run All checks|\n".center(terminal_width, ' '))
+    print("|5.Check if the Email can Receive emails/Validation check|".center(terminal_width, ' '))
+    print("|6.Perform Bulk Email Checks using a .CSV file with a full scan|".center(terminal_width, ' '))
+    print("|7.Run All checks|\n".center(terminal_width, ' '))
     print("Developed By Qais M.Alqaissi\n".center(terminal_width, ' '))
     print("Aurum Terminal".center(terminal_width, '-'))
 
@@ -217,11 +284,15 @@ if __name__ == '__main__':
             print(cblacklist(email))
 
         elif option == "5":
+            email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
+            print(vc(email))
+
+        elif option == "6":
             file_path = input(Style.RESET_ALL + "Enter the File path to the .CSV file: ")
             bulkscan(file_path)
             print(f"Report of the scan is done ")
 
-        elif option == "6":
+        elif option == "7":
             email = input(Style.RESET_ALL + "Enter the Email Address you want to Check: ")
             fullscan(email)
 
