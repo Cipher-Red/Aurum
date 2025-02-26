@@ -12,7 +12,8 @@ Aurum is a Python-based terminal tool that provides email validation, domain MX 
 - **DNS Record Check:** Determines if the email domain has any DNS records(MX records, A & AAAA records, etc...), indicating its ability to receive emails.
 - **Blacklist Check:** Checks if the email domain is blacklisted on multiple DNSBLs, including Spamhaus, SORBS, and Barracuda.
 - **Custom Blacklist Check:** Allows adding a custom internal blacklist for manually flagged domains or specific email addresses.
-- **All-in-One Check:** Runs all four checks in sequence for comprehensive analysis.
+- **Email Reachability Check:** Checks the emails reachability by sending smtp packets.
+- **All-in-One Check:** Runs all 5 checks in sequence for comprehensive analysis.
 - **Bulk Email Check:** Performs bulk email validation from a CSV file, running a full scan for each email.
 - **Cross-Platform:** Works on both Windows and Linux systems.
 - **PDF Report Generation:** Generates a detailed PDF report of the validation results.
@@ -44,8 +45,9 @@ Then, follow the on-screen prompts to:
 2. Check if an email domain can receive messages.
 3. Check if an email domain is blacklisted.
 4. Check if an email address or domain is internally blacklisted using a custom list.
-5. Perform bulk email checks using a CSV file.
-6. Run all checks at once.
+5. Check Email reachability.
+6. Perform bulk email checks using a CSV file.
+7. Run all checks at once.
 
 ### Windows Users
 Windows users can use a compiled version of the code to run the tool without needing Python installed. A precompiled executable version will be available in the releases section.
@@ -58,8 +60,9 @@ Windows users can use a compiled version of the code to run the tool without nee
                          |2.Check if Email Can Receive|                         
                      |3.Check if the Email is blacklisted|                      
       |4.Check if the Email is internally blacklisted using a custom list|      
-       |5. Perform Bulk Email Checks using a .CSV file with a full scan|        
-                              |6.Run All checks|
+           |5.Check if the Email can Receive emails/Validation check|           
+        |6.Perform Bulk Email Checks using a .CSV file with a full scan|        
+                              |7.Run All checks|
                                
                          Developed By Qais M.Alqaissi
                           
